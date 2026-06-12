@@ -366,7 +366,22 @@
   /* ── MOBILE ── */
   @media (max-width: 768px) {
     .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .nav-links { display: none; }
+    nav { align-items: center; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 5vw 1.2rem;
+      background: rgba(8,13,26,.98);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-open .nav-links { display: flex; }
+    .nav-cta { display: none; }
     .terminal { display: none; }
     h1 { font-size: 2.2rem; }
     section { padding: 70px 5vw; }
@@ -400,7 +415,7 @@
     <li><a href="#contact">contact</a></li>
   </ul>
   <a href="mailto:hassanakhter421@gmail.com" class="nav-cta">hire_me()</a>
-  <button class="menu-btn" aria-label="menu"><span></span><span></span><span></span></button>
+  <button class="menu-btn" type="button" aria-label="menu" aria-controls="nav-links" aria-expanded="false"><span></span><span></span><span></span></button>
 </nav>
 
 <!-- HERO -->
@@ -1035,8 +1050,25 @@ document.querySelectorAll('.project-card').forEach(card => {
 });
 
 /* ── ACTIVE NAV ── */
+const nav = document.querySelector('nav');
+const menuBtn = document.querySelector('.menu-btn');
 const sections = document.querySelectorAll('section[id]');
 const navAs = document.querySelectorAll('.nav-links a');
+
+if (nav && menuBtn) {
+  menuBtn.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('nav-open');
+    menuBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  navAs.forEach(link => {
+    link.addEventListener('click', () => {
+      nav.classList.remove('nav-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
 window.addEventListener('scroll', () => {
   let cur = '';
   sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
